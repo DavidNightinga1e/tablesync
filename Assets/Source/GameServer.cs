@@ -43,10 +43,6 @@ namespace TableSync.Demo
             _blue = _server.Clients[0];
             _orange = _server.Clients[1];
 
-            while ()
-            {
-                
-            }
         }
     }
 }
