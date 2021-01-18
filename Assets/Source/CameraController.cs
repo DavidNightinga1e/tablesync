@@ -9,19 +9,19 @@ namespace TableSync.Demo
         [SerializeField] private Transform middlePosition;
         [SerializeField] private Camera targetCamera;
 
-        void SetBlue()
+        public void SetBlue()
         {
             targetCamera.transform.position = bluePosition.position;
             targetCamera.transform.rotation = bluePosition.rotation;
         }
         
-        void SetOrange()
+        public void SetOrange()
         {
             targetCamera.transform.position = orangePosition.position;
             targetCamera.transform.rotation = orangePosition.rotation;
         }
         
-        void SetMiddle()
+        public void SetMiddle()
         {
             targetCamera.transform.position = middlePosition.position;
             targetCamera.transform.rotation = middlePosition.rotation;

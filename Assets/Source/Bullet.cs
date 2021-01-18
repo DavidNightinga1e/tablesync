@@ -21,7 +21,7 @@ namespace TableSync.Demo
         private void OnCollisionEnter(Collision other)
         {
             particleSystemBulletController.Cutoff();
-            FindObjectOfType<GameController>().Hit(other);
+            //FindObjectOfType<GameController>().Hit(other);
             Destroy(gameObject);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -10,13 +11,32 @@ namespace TableSync.Demo
     public class LobbyManager : MonoBehaviourPunCallbacks
     {
         [SerializeField] private DialogBox dialogBox;
-        [SerializeField] private TMP_InputField nicknameText;
         [SerializeField] private TMP_InputField privateRoomNameText;
         [SerializeField] private Button quickSearchButton;
         [SerializeField] private Button joinOrCreatePrivateRoomButton;
 
+        private LocalSettingsProvider _localSettingsProvider;
+
+        public static readonly RoomOptions DefaultRoomOptions = new RoomOptions
+        {
+            MaxPlayers = 2,
+            CustomRoomProperties = new Hashtable
+            {
+                {"BluePlayers", 0},
+                {"OrangePlayers", 0}
+            }
+        };
+
         private void Awake()
         {
+            PhotonPeer.RegisterType(
+                typeof(BulletSpawnData), 
+                0, 
+                BulletSpawnData.SerializeBulletSpawnData,
+                BulletSpawnData.DeserializeBulletSpawnData);
+
+            _localSettingsProvider = FindObjectOfType<LocalSettingsProvider>();
+
             dialogBox.IsVisible = true;
             dialogBox.YesButtonVisible = dialogBox.NoButtonVisible = false;
             dialogBox.CancelButtonVisible = true;
@@ -32,20 +52,20 @@ namespace TableSync.Demo
 
         private void JoinOrCreatePrivateRoom()
         {
-            PhotonNetwork.NickName = nicknameText.text;
+            PhotonNetwork.NickName = _localSettingsProvider.settings.nickname;
             var privateRoomName = privateRoomNameText.text;
-            PhotonNetwork.JoinOrCreateRoom(privateRoomName, new RoomOptions { MaxPlayers = 2}, TypedLobby.Default);
+            PhotonNetwork.JoinOrCreateRoom(privateRoomName, DefaultRoomOptions, TypedLobby.Default);
         }
 
         private void QuickSearch()
         {
-            PhotonNetwork.NickName = nicknameText.text;
+            PhotonNetwork.NickName = _localSettingsProvider.settings.nickname;
             PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2}, TypedLobby.Default);
+            PhotonNetwork.CreateRoom(null, DefaultRoomOptions, TypedLobby.Default);
         }
 
         public override void OnJoinedRoom()

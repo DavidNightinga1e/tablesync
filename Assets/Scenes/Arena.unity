@@ -1997,8 +1997,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1143569150}
   - component: {fileID: 1143569149}
+  - component: {fileID: 1143569151}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2016,9 +2017,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf7b890ff3b54b52ab430372d2d0a980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
-  bluePlayerPrefab: {fileID: 0}
-  orangePlayerPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 6354980670064259946, guid: 700ba577e5ee4924db6b0a472c0b1c7e,
+    type: 3}
 --- !u!4 &1143569150
 Transform:
   m_ObjectHideFlags: 0
@@ -2033,6 +2033,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1143569151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143569148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 0
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1203256971
 GameObject:
   m_ObjectHideFlags: 0

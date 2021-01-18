@@ -12,7 +12,7 @@ namespace TableSync.Demo
         public RectTransform menu;
         public TextMeshProUGUI logger;
 
-        private GameController _gameController;
+        private GameManager _gameManager;
 
         private NetworkingClient _blue;
         private NetworkingClient _orange;
@@ -21,7 +21,7 @@ namespace TableSync.Demo
         private void Awake()
         {
             createServerButton.onClick.AddListener(CreateHost);
-            _gameController = FindObjectOfType<GameController>();
+            _gameManager = FindObjectOfType<GameManager>();
         }
 
         public void CreateHost()

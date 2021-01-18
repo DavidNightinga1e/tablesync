@@ -391,6 +391,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152443893}
   m_CullTransparentMesh: 0
+--- !u!1 &211652169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 211652171}
+  - component: {fileID: 211652170}
+  m_Layer: 0
+  m_Name: LocalSettingsProvider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &211652170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211652169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e606c596734edcb3dfcc7440d08783, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings:
+    nickname: 
+    isPreferedColorBlue: 0
+--- !u!4 &211652171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211652169}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &230748712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,7 +1777,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogBox: {fileID: 152443895}
-  nicknameText: {fileID: 971856126}
   privateRoomNameText: {fileID: 259522283}
   quickSearchButton: {fileID: 1201969293}
   joinOrCreatePrivateRoomButton: {fileID: 300796114}
@@ -2451,7 +2496,7 @@ GameObject:
   - component: {fileID: 1124078567}
   - component: {fileID: 1124078568}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: IsBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2523,7 +2568,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1149965150
 GameObject:
   m_ObjectHideFlags: 0
@@ -3737,6 +3782,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1659731449}
   - component: {fileID: 1659731450}
+  - component: {fileID: 1659731452}
   m_Layer: 5
   m_Name: Color
   m_TagString: Untagged
@@ -3790,6 +3836,14 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!222 &1659731452
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659731448}
+  m_CullTransparentMesh: 0
 --- !u!1 &1674850756
 GameObject:
   m_ObjectHideFlags: 0
@@ -4357,7 +4411,7 @@ GameObject:
   - component: {fileID: 1924086409}
   - component: {fileID: 1924086408}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Colors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4508,7 +4562,7 @@ GameObject:
   - component: {fileID: 1985784189}
   - component: {fileID: 1985784190}
   m_Layer: 5
-  m_Name: Toggle (1)
+  m_Name: IsOrange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4766,6 +4820,7 @@ GameObject:
   - component: {fileID: 2015913222}
   - component: {fileID: 2015913224}
   - component: {fileID: 2015913223}
+  - component: {fileID: 2015913225}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -4830,6 +4885,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2015913221}
   m_CullTransparentMesh: 0
+--- !u!114 &2015913225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015913221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 226208fe55e04f12bc2af9c3cab32114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nicknameInputField: {fileID: 971856126}
+  isBlueToggle: {fileID: 1124078568}
+  isOrangeToggle: {fileID: 1985784190}
 --- !u!1 &2018324937
 GameObject:
   m_ObjectHideFlags: 0
