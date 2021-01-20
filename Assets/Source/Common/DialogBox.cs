@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     public class DialogBox : MonoBehaviour
     {

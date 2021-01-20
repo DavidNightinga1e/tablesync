@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     public class CameraController : MonoBehaviour
     {

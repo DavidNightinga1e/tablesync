@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     [Serializable]
     public struct LocalSettings

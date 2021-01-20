@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     public class LobbyManager : MonoBehaviourPunCallbacks
     {
@@ -29,11 +29,18 @@ namespace TableSync.Demo
 
         private void Awake()
         {
-            PhotonPeer.RegisterType(
+            // todo move to entry point
+            print(PhotonPeer.RegisterType(
                 typeof(BulletSpawnData), 
                 0, 
-                BulletSpawnData.SerializeBulletSpawnData,
-                BulletSpawnData.DeserializeBulletSpawnData);
+                BulletSpawnData.Serialize,
+                BulletSpawnData.Deserialize));
+
+            print(PhotonPeer.RegisterType(
+                typeof(BulletHitData),
+                1,
+                BulletHitData.Serialize,
+                BulletHitData.Deserialize));
 
             _localSettingsProvider = FindObjectOfType<LocalSettingsProvider>();
 

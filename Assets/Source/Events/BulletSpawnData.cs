@@ -2,7 +2,7 @@
 using ExitGames.Client.Photon;
 using UnityEngine;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     [Serializable]
     public class BulletSpawnData
@@ -10,10 +10,11 @@ namespace TableSync.Demo
         public Vector2 position;
         public float rotation;
         
-        public const int SizeOfBulletSpawnData = 3 * 4; // 3 floats
+        private const int SizeOfBulletSpawnData = 3 * 4; // 3 floats
+
+        private static readonly byte[] MemBulletSpawnData = new byte[SizeOfBulletSpawnData];
         
-        public static readonly byte[] MemBulletSpawnData = new byte[SizeOfBulletSpawnData];
-        public static short SerializeBulletSpawnData(StreamBuffer outStream, object customObject)
+        public static short Serialize(StreamBuffer outStream, object customObject)
         {
             var bsp = (BulletSpawnData) customObject;
             lock (MemBulletSpawnData)
@@ -29,13 +30,13 @@ namespace TableSync.Demo
             return SizeOfBulletSpawnData;
         }
 
-        public static object DeserializeBulletSpawnData(StreamBuffer inStream, short length)
+        public static object Deserialize(StreamBuffer inStream, short length)
         {
             var bsp = new BulletSpawnData();
             lock (MemBulletSpawnData)
             {
                 inStream.Read(MemBulletSpawnData, 0, SizeOfBulletSpawnData);
-                int index = 0;
+                var index = 0;
                 Protocol.Deserialize(out bsp.position.x, MemBulletSpawnData, ref index);
                 Protocol.Deserialize(out bsp.position.y, MemBulletSpawnData, ref index);
                 Protocol.Deserialize(out bsp.rotation, MemBulletSpawnData, ref index);

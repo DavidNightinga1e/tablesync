@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
@@ -17,8 +17,28 @@ namespace TableSync.Demo
 
         private LocalSettingsProvider _localSettingsProvider;
 
-        private const float BulletSpeed = 10;
-        private const float BulletSpawnHeight = 0.5f;
+        public event Action<int> OnBluePlayerLivesUpdate;
+        public event Action<int> OnOrangePlayerLivesUpdate;
+        
+        private int _bluePlayerLives;
+        private int _orangePlayerLives;
+
+        public bool isGameRunning;
+
+        public int BluePlayerLives
+        {
+            get => _bluePlayerLives;
+            private set => OnBluePlayerLivesUpdate?.Invoke(_bluePlayerLives = value);
+        }
+
+        public int OrangePlayerLives
+        {
+            get => _orangePlayerLives;
+            private set => OnOrangePlayerLivesUpdate?.Invoke(_orangePlayerLives = value);
+        }
+
+        public const float BulletSpeed = 10;
+        public const float BulletSpawnHeight = 0.5f;
 
         void Start()
         {
@@ -31,11 +51,13 @@ namespace TableSync.Demo
             if (bluePlayers == 0 && isWantedBlue || orangePlayers > 0 && !isWantedBlue)
             {
                 properties["BluePlayers"] = ++bluePlayers;
+                BluePlayerLives = 3;
                 SpawnPlayer(PlayerColor.Blue);
             }
             else
             {
                 properties["OrangePlayers"] = ++orangePlayers;
+                OrangePlayerLives = 3;
                 SpawnPlayer(PlayerColor.Orange);
             }
 
@@ -58,30 +80,11 @@ namespace TableSync.Demo
             PhotonNetwork.Instantiate(prefabName, startPosition, startRotation);
         }
 
-        public void Shoot(Player player)
-        {
-            var position = player.bulletSpawnPoint.position;
-            var rotation = player.bulletSpawnPoint.rotation.eulerAngles;
-            var bulletSpawnData = new BulletSpawnData
-            {
-                position = new Vector2(position.x, position.z),
-                rotation = rotation.y
-            };
-            PhotonNetwork.RaiseEvent(
-                GameControllerEvents.BulletShoot,
-                bulletSpawnData,
-                new RaiseEventOptions
-                {
-                    Receivers = ReceiverGroup.All
-                },
-                SendOptions.SendReliable);
-        }
-
         public void OnEvent(EventData photonEvent)
         {
             switch (photonEvent.Code)
             {
-                case GameControllerEvents.BulletShoot:
+                case GameEvents.BulletShoot:
                     var bulletSpawnData = (BulletSpawnData) photonEvent.CustomData;
                     var bulletPosition = new Vector3(
                         bulletSpawnData.position.x,
@@ -92,6 +95,24 @@ namespace TableSync.Demo
                         bulletRotation);
                     var bullet = bulletInstance.GetComponent<Bullet>();
                     bullet.AddVelocity(BulletSpeed);
+                    break;
+
+                case GameEvents.BulletPlayerHit:
+                    var bulletHitData = (BulletHitData) photonEvent.CustomData;
+                    var playerView = PhotonView.Find(bulletHitData.viewId);
+                    var player = playerView.GetComponent<Player>();
+                    player.DisplayHit(bulletHitData.direction);
+                    switch (player.playerColorType)
+                    {
+                        case PlayerColor.Blue:
+                            BluePlayerLives -= 1;
+                            break;
+                        case PlayerColor.Orange:
+                            OrangePlayerLives -= 1;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                     break;
             }
         }

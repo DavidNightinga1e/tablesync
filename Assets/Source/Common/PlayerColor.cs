@@ -1,4 +1,4 @@
-﻿namespace TableSync.Demo
+﻿namespace TableSync
 {
     public enum PlayerColor
     {

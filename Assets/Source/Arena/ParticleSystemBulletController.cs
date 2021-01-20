@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace TableSync.Demo
+namespace TableSync
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class ParticleSystemBulletController : MonoBehaviour
