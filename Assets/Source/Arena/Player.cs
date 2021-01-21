@@ -9,44 +9,40 @@ namespace TableSync
     public class Player : MonoBehaviourPunCallbacks
     {
         [SerializeField] private GameObject bloodParticleSystemPrefab;
-        [SerializeField] private GameManager gameManager;
-        [SerializeField] private Camera inputCamera;
-        [SerializeField] private CameraController cameraController;
         [SerializeField] private CharacterController characterController;
-        
+        [SerializeField] private LivesController livesControllerPrefab;
+
         public PlayerColor playerColorType;
         public Transform bulletSpawnPoint;
 
         private const float ReloadTime = 0.8f;
         private const float PlayerSpeed = 5f;
-        
+
         private double _lastShootTime;
-        
+        private Camera _inputCamera;
+        private GameManager _gameManager;
+        private LivesController _livesController;
+
+        public int Lives { get; set; } = 3;
+
         private void Awake()
         {
-            if (!photonView.IsMine) return;
+            _gameManager = FindObjectOfType<GameManager>();
+            _livesController = Instantiate(livesControllerPrefab.gameObject, _gameManager.canvas.transform)
+                .GetComponent<LivesController>();
+            _livesController.player = this;
+            _livesController.mainCamera = _gameManager.inputCamera;
+            _inputCamera = _gameManager.inputCamera;
+            _gameManager.players.Add(playerColorType, this);
 
-            SetupCameraForThisPlayer();
-        }
-
-        private void SetupCameraForThisPlayer()
-        {
-            switch (playerColorType)
-            {
-                case PlayerColor.Blue:
-                    cameraController.SetBlue();
-                    break;
-                case PlayerColor.Orange:
-                    cameraController.SetOrange();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            if (photonView.IsMine)
+                _gameManager.cameraController.SetPlayerColor(playerColorType);
         }
 
         private void Update()
         {
             if (!photonView.IsMine) return;
+            if (!_gameManager.IsGameRunning) return;
 
             ProcessInputForThisPlayer();
         }
@@ -69,18 +65,14 @@ namespace TableSync
                     throw new ArgumentOutOfRangeException();
             }
 
-            LookAtMouse(inputCamera, mousePosition);
+            LookAtMouse(_inputCamera, mousePosition);
+            Move(inputMove);
 
-            if (gameManager.isGameRunning)
+            var currentTime = PhotonNetwork.Time;
+            if (Input.GetButtonDown("Fire1") && currentTime > _lastShootTime + ReloadTime)
             {
-                Move(inputMove);
-
-                var currentTime = PhotonNetwork.Time;
-                if (Input.GetButtonDown("Fire1") && currentTime > _lastShootTime + ReloadTime)
-                {
-                    Shoot();
-                    _lastShootTime = currentTime;
-                }
+                Shoot();
+                _lastShootTime = currentTime;
             }
         }
 
@@ -106,7 +98,7 @@ namespace TableSync
         {
             var position = bulletSpawnPoint.position;
             var rotation = bulletSpawnPoint.rotation.eulerAngles;
-            var bulletSpawnData = new BulletSpawnData
+            var bulletSpawnData = new BulletSpawnEventData
             {
                 position = new Vector2(position.x, position.z),
                 rotation = rotation.y
@@ -114,17 +106,23 @@ namespace TableSync
             PhotonNetwork.RaiseEvent(
                 GameEvents.BulletShoot,
                 bulletSpawnData,
-                EventsUtilities.RaiseEventOptionsReceiversAll,
+                GameEventsUtilities.RaiseEventOptionsReceiversAll,
                 SendOptions.SendReliable);
         }
-        
+
         public void DisplayHit(Vector2 direction)
         {
             var direction3 = new Vector3(direction.x, 0, direction.y);
-            var playerHitCollider = GetComponent<CapsuleCollider>();
+            var playerHitCollider = GetComponentInChildren<CapsuleCollider>();
             var targetPosition = playerHitCollider.ClosestPointOnBounds(playerHitCollider.bounds.center + direction3);
             var instance = Instantiate(bloodParticleSystemPrefab, targetPosition, Quaternion.LookRotation(direction));
             instance.GetComponent<ParticleSystem>().Play();
+        }
+
+        private void OnDestroy()
+        {
+            _gameManager.players.Remove(playerColorType);
+            Destroy(_livesController.gameObject);
         }
     }
 }

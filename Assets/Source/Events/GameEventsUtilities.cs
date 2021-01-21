@@ -2,7 +2,7 @@
 
 namespace TableSync
 {
-    public class EventsUtilities
+    public class GameEventsUtilities
     {
         public static RaiseEventOptions RaiseEventOptionsReceiversAll =
             new RaiseEventOptions {Receivers = ReceiverGroup.All};

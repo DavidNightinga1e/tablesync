@@ -20,24 +20,24 @@ namespace TableSync
             bulletRigidbody.AddForce(velocity * transform.forward, ForceMode.VelocityChange);
         }
 
-        private void OnCollisionEnter(Collision other)
+        private void OnCollisionEnter(Collision collision)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                var player = other.transform.GetComponent<Player>();
+                var player = collision.transform.GetComponentInParent<Player>();
                 if (player != null)
                 {
                     var playerViewId = player.photonView.ViewID;
-                    var bulletHitData = new BulletHitData
+                    var bulletHitData = new BulletHitEventData
                     {
-                        direction = new Vector2(other.impulse.x, other.impulse.z),
+                        direction = new Vector2(collision.impulse.x, collision.impulse.z),
                         viewId = playerViewId
                     };
 
                     PhotonNetwork.RaiseEvent(
                         GameEvents.BulletPlayerHit,
                         bulletHitData,
-                        EventsUtilities.RaiseEventOptionsReceiversAll,
+                        GameEventsUtilities.RaiseEventOptionsReceiversAll,
                         SendOptions.SendReliable);
                 }
             }

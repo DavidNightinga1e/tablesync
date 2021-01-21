@@ -265,7 +265,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3526438055181615984}
   - component: {fileID: 3106850187223987330}
-  - component: {fileID: 8152097723617263657}
   - component: {fileID: 6268328556402138199}
   - component: {fileID: 2131045019073077286}
   - component: {fileID: 2687904295817860443}
@@ -289,6 +288,7 @@ Transform:
   m_Children:
   - {fileID: 3526438054994182332}
   - {fileID: 3526438055143476843}
+  - {fileID: 4905123139936759362}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -310,20 +310,6 @@ CharacterController:
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.61, z: 0}
---- !u!136 &8152097723617263657
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3526438055181615991}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.22
-  m_Height: 1.2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.61, z: 0}
 --- !u!114 &6268328556402138199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,9 +324,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bloodParticleSystemPrefab: {fileID: 6375586237265180254, guid: 2b1f1ce3d1accf3458c460e2b3f3882c,
     type: 3}
+  characterController: {fileID: 3106850187223987330}
+  livesControllerPrefab: {fileID: 5624564994557196207, guid: 79d3a69d22b8f784f901a12de0f39d4a,
+    type: 3}
   playerColorType: 0
   bulletSpawnPoint: {fileID: 5902581324318581984}
-  characterController: {fileID: 0}
 --- !u!114 &2131045019073077286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -713,3 +701,48 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &8088983645967424061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4905123139936759362}
+  - component: {fileID: 2698120396790546582}
+  m_Layer: 8
+  m_Name: HitCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4905123139936759362
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8088983645967424061}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 3526438055181615984}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &2698120396790546582
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8088983645967424061}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.21894369
+  m_Height: 1.2391131
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.58128417, z: 0}

@@ -17,30 +17,20 @@ namespace TableSync
 
         private LocalSettingsProvider _localSettingsProvider;
 
-        public static readonly RoomOptions DefaultRoomOptions = new RoomOptions
-        {
-            MaxPlayers = 2,
-            CustomRoomProperties = new Hashtable
-            {
-                {"BluePlayers", 0},
-                {"OrangePlayers", 0}
-            }
-        };
-
         private void Awake()
         {
             // todo move to entry point
-            print(PhotonPeer.RegisterType(
-                typeof(BulletSpawnData), 
-                0, 
-                BulletSpawnData.Serialize,
-                BulletSpawnData.Deserialize));
+            PhotonPeer.RegisterType(
+                typeof(BulletSpawnEventData),
+                0,
+                BulletSpawnEventData.Serialize,
+                BulletSpawnEventData.Deserialize);
 
-            print(PhotonPeer.RegisterType(
-                typeof(BulletHitData),
+            PhotonPeer.RegisterType(
+                typeof(BulletHitEventData),
                 1,
-                BulletHitData.Serialize,
-                BulletHitData.Deserialize));
+                BulletHitEventData.Serialize,
+                BulletHitEventData.Deserialize);
 
             _localSettingsProvider = FindObjectOfType<LocalSettingsProvider>();
 
@@ -61,7 +51,12 @@ namespace TableSync
         {
             PhotonNetwork.NickName = _localSettingsProvider.settings.nickname;
             var privateRoomName = privateRoomNameText.text;
-            PhotonNetwork.JoinOrCreateRoom(privateRoomName, DefaultRoomOptions, TypedLobby.Default);
+            PhotonNetwork.JoinOrCreateRoom(privateRoomName,
+                new RoomOptions
+                {
+                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default)
+                },
+                TypedLobby.Default);
         }
 
         private void QuickSearch()
@@ -72,7 +67,12 @@ namespace TableSync
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            PhotonNetwork.CreateRoom(null, DefaultRoomOptions, TypedLobby.Default);
+            PhotonNetwork.CreateRoom(null,
+                new RoomOptions
+                {
+                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default)
+                },
+                TypedLobby.Default);
         }
 
         public override void OnJoinedRoom()

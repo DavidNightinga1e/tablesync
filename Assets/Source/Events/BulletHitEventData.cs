@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TableSync
 {
     [Serializable]
-    public class BulletHitData
+    public class BulletHitEventData
     {
         public Vector2 direction;
         public int viewId;
@@ -16,7 +16,7 @@ namespace TableSync
             
         public static short Serialize(StreamBuffer outStream, object customObject)
         {
-            var bh = (BulletHitData) customObject;
+            var bh = (BulletHitEventData) customObject;
             lock (MemBulletHitData)
             {
                 var bytes = MemBulletHitData;
@@ -32,7 +32,7 @@ namespace TableSync
 
         public static object Deserialize(StreamBuffer inStream, short length)
         {
-            var bh = new BulletHitData();
+            var bh = new BulletHitEventData();
             lock (MemBulletHitData)
             {
                 inStream.Read(MemBulletHitData, 0, SizeOfBulletHitData);
