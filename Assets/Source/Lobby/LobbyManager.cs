@@ -12,6 +12,7 @@ namespace TableSync
     {
         [SerializeField] private DialogBox dialogBox;
         [SerializeField] private TMP_InputField privateRoomNameText;
+        [SerializeField] private TextMeshProUGUI version;
         [SerializeField] private Button quickSearchButton;
         [SerializeField] private Button joinOrCreatePrivateRoomButton;
 
@@ -19,19 +20,10 @@ namespace TableSync
 
         private void Awake()
         {
-            // todo move to entry point
-            PhotonPeer.RegisterType(
-                typeof(BulletSpawnEventData),
-                0,
-                BulletSpawnEventData.Serialize,
-                BulletSpawnEventData.Deserialize);
-
-            PhotonPeer.RegisterType(
-                typeof(BulletHitEventData),
-                1,
-                BulletHitEventData.Serialize,
-                BulletHitEventData.Deserialize);
-
+            version.text = $"Version: {Application.version}";
+            
+            PhotonPeerHelper.RegisterCustomTypes();
+            
             _localSettingsProvider = FindObjectOfType<LocalSettingsProvider>();
 
             dialogBox.IsVisible = true;
@@ -54,7 +46,8 @@ namespace TableSync
             PhotonNetwork.JoinOrCreateRoom(privateRoomName,
                 new RoomOptions
                 {
-                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default)
+                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default),
+                    IsVisible = false
                 },
                 TypedLobby.Default);
         }

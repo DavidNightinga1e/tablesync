@@ -27,6 +27,7 @@ namespace TableSync
 
         public void LoadFromDisk()
         {
+            if (!File.Exists(PathToSettings)) return;
             using (var read = new StreamReader(PathToSettings))
             {
                 var bf = new BinaryFormatter();
