@@ -1,4 +1,5 @@
 ﻿using System;
+using Bolt.Matchmaking;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -34,7 +35,7 @@ namespace TableSync
 
             quickSearchButton.onClick.AddListener(QuickSearch);
             joinOrCreatePrivateRoomButton.onClick.AddListener(JoinOrCreatePrivateRoom);
-
+            
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.ConnectUsingSettings();
         }
