@@ -21,9 +21,9 @@ namespace TableSync
         private void Awake()
         {
             version.text = $"Version: {Application.version}";
-            
+
             PhotonPeerHelper.RegisterCustomTypes();
-            
+
             _localSettingsProvider = FindObjectOfType<LocalSettingsProvider>();
 
             dialogBox.IsVisible = true;
@@ -95,6 +95,20 @@ namespace TableSync
         {
             dialogBox.RemoveAllListeners();
             dialogBox.IsVisible = false;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && !dialogBox.IsVisible)
+            {
+                dialogBox.RemoveAllListeners();
+                dialogBox.IsVisible = true;
+                dialogBox.YesButtonVisible = dialogBox.NoButtonVisible = true;
+                dialogBox.CancelButtonVisible = false;
+                dialogBox.Text.text = "Are you sure you want to leave the game?";
+                dialogBox.YesButton.onClick.AddListener(Application.Quit);
+                dialogBox.NoButton.onClick.AddListener(() => dialogBox.IsVisible = false);
+            }
         }
     }
 }
