@@ -46,7 +46,11 @@ namespace TableSync
             PhotonNetwork.JoinOrCreateRoom(privateRoomName,
                 new RoomOptions
                 {
-                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default),
+                    CustomRoomProperties = new Hashtable
+                    {
+                        {nameof(CustomRoomProperties.IsBluePlayerConnected), false},
+                        {nameof(CustomRoomProperties.IsOrangePlayerConnected), false}
+                    },
                     IsVisible = false
                 },
                 TypedLobby.Default);
@@ -60,12 +64,7 @@ namespace TableSync
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            PhotonNetwork.CreateRoom(null,
-                new RoomOptions
-                {
-                    CustomRoomProperties = CustomRoomPropertiesConverter.ToHashtable(CustomRoomProperties.Default)
-                },
-                TypedLobby.Default);
+            PhotonNetwork.CreateRoom(null);
         }
 
         public override void OnJoinedRoom()

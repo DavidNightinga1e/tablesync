@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -10,15 +11,16 @@ using UnityEngine.UI;
 
 namespace TableSync
 {
-    public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
+    public class Game : MonoBehaviour
     {
         public Canvas canvas;
         public Camera inputCamera;
         public CameraController cameraController;
         public Dictionary<PlayerColor, Player> players = new Dictionary<PlayerColor, Player>(2);
-        
+
         [SerializeField] private Bullet bulletPrefab;
         [SerializeField] private DialogBox dialogBox;
+        [SerializeField] private InfoDisplay infoDisplay;
 
         private readonly Vector3 _blueStartPlayerPosition = new Vector3(4, 0, -4);
         private readonly Vector3 _orangeStartPlayerPosition = new Vector3(-4, 0, 4);
@@ -32,37 +34,42 @@ namespace TableSync
 
         public bool IsGameRunning => _isGameRunning;
 
-        private const float BulletSpeed = 10;
+        private const float BulletSpeed = 8;
         private const float BulletSpawnHeight = 0.5f;
+        private PlayerColor localPlayerColor;
+        private PlayerColor RemotePlayerColor => (PlayerColor) (((int) localPlayerColor + 1) % 2);
 
         void Start()
         {
             var isWantedBlue = FindObjectOfType<LocalSettingsProvider>().settings.isPreferedColorBlue;
             var isWantedOrange = !isWantedBlue;
 
-            var roomProperties = CustomRoomPropertiesProvider.Download();
+            var isBluePlayerConnected = CustomRoomProperties.IsBluePlayerConnected;
+            var isOrangePlayerConnected = CustomRoomProperties.IsOrangePlayerConnected;
 
-            if (!roomProperties.IsBluePlayerConnected && isWantedBlue ||
-                roomProperties.IsOrangePlayerConnected && isWantedOrange)
+            if (!isBluePlayerConnected && isWantedBlue ||
+                isOrangePlayerConnected && isWantedOrange)
             {
-                roomProperties.IsBluePlayerConnected = true;
-                SpawnPlayer(PlayerColor.Blue);
+                CustomRoomProperties.IsBluePlayerConnected = true;
+                localPlayerColor = PlayerColor.Blue;
             }
             else
             {
-                roomProperties.IsOrangePlayerConnected = true;
-                SpawnPlayer(PlayerColor.Orange);
+                CustomRoomProperties.IsOrangePlayerConnected = true;
+                localPlayerColor = PlayerColor.Orange;
             }
 
-            if (!(roomProperties.IsBluePlayerConnected && roomProperties.IsOrangePlayerConnected))
+            SpawnPlayer(localPlayerColor);
+
+            if (!(isBluePlayerConnected && isOrangePlayerConnected))
             {
                 ShowWaitingForOthersDialogBox();
             }
 
-            CustomRoomPropertiesProvider.Upload(roomProperties);
+            infoDisplay.PlayerName = PhotonNetwork.LocalPlayer.NickName;
 
             PhotonNetwork.RaiseEvent(
-                GameEvents.PlayerJoined,
+                GameEvent.PlayerJoined,
                 null,
                 new RaiseEventOptions {Receivers = ReceiverGroup.MasterClient},
                 SendOptions.SendReliable);
@@ -77,11 +84,6 @@ namespace TableSync
             dialogBox.CancelButton.onClick.AddListener(() => PhotonNetwork.LeaveRoom());
             dialogBox.IsVisible = true;
             dialogBox.Text.text = "Waiting for other player to join";
-        }
-
-        private void StartCountdown(double gameStartTime)
-        {
-            _countdownCoroutine = StartCoroutine(CountdownEnumerator(gameStartTime));
         }
 
         private void StopCountdown()
@@ -110,7 +112,7 @@ namespace TableSync
             if (PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.RaiseEvent(
-                    GameEvents.GameStarted,
+                    GameEvent.GameStarted,
                     null,
                     GameEventsUtilities.RaiseEventOptionsReceiversAll,
                     SendOptions.SendReliable);
@@ -134,41 +136,15 @@ namespace TableSync
             PhotonNetwork.Instantiate(prefabName, startPosition, startRotation);
         }
 
-        public void OnEvent(EventData photonEvent)
+        public void EndGame(GameEndResult gameEndResult)
         {
-            switch (photonEvent.Code)
-            {
-                case GameEvents.BulletShoot:
-                    ProcessBulletShoot(photonEvent);
-                    break;
-                case GameEvents.BulletPlayerHit:
-                    ProcessBulletHit(photonEvent);
-                    break;
-                case GameEvents.PlayerJoined:
-                    ProcessPlayerJoined(photonEvent);
-                    break;
-                case GameEvents.CountdownStarted:
-                    ProcessCountdownStarted(photonEvent);
-                    break;
-                case GameEvents.GameStarted:
-                    ProcessGameStarted(photonEvent);
-                    break;
-                case GameEvents.GameEnded:
-                    ProcessGameEnded(photonEvent);
-                    break;
-            }
-        }
-
-        private void ProcessGameEnded(EventData photonEvent)
-        {
-            print("processing game end");
             _isGameRunning = false;
             dialogBox.IsVisible = true;
             dialogBox.RemoveAllListeners();
             dialogBox.YesButtonVisible = true;
             dialogBox.YesButton.onClick.AddListener(() => PhotonNetwork.LeaveRoom());
             dialogBox.NoButtonVisible = dialogBox.CancelButtonVisible = false;
-            switch ((GameEndResult) photonEvent.CustomData)
+            switch (gameEndResult)
             {
                 case GameEndResult.BluePlayerWon:
                     dialogBox.Text.text = "Blue player won!";
@@ -186,39 +162,36 @@ namespace TableSync
             dialogBox.Text.text += "\nPress [yes] to leave the match";
         }
 
-        private void ProcessGameStarted(EventData photonEvent)
+        public void StartGame()
         {
             StopCountdown();
             _isGameRunning = true;
         }
 
-        private void ProcessCountdownStarted(EventData photonEvent)
+        public void StartCountdown(double gameStartTime)
         {
-            StartCountdown((double) photonEvent.CustomData);
+            _countdownCoroutine = StartCoroutine(CountdownEnumerator(gameStartTime));
         }
 
-        private void ProcessPlayerJoined(EventData photonEvent)
+        public void TryStartGame()
         {
-            var customRoomProperties = CustomRoomPropertiesProvider.Download();
-            if (customRoomProperties.IsBluePlayerConnected && customRoomProperties.IsOrangePlayerConnected)
-            {
-                PhotonNetwork.CurrentRoom.IsOpen = false;
-                PhotonNetwork.RaiseEvent(
-                    GameEvents.CountdownStarted,
-                    PhotonNetwork.Time + CountdownLength,
-                    GameEventsUtilities.RaiseEventOptionsReceiversAll,
-                    SendOptions.SendReliable);
-            }
+            if (!CustomRoomProperties.IsBluePlayerConnected || !CustomRoomProperties.IsOrangePlayerConnected)
+                return;
+
+            var nickName = PhotonNetwork.CurrentRoom.Players.Last().Value.NickName;
+            infoDisplay.EnemyName = nickName;
+
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.RaiseEvent(
+                GameEvent.CountdownStarted,
+                PhotonNetwork.Time + CountdownLength,
+                GameEventsUtilities.RaiseEventOptionsReceiversAll,
+                SendOptions.SendReliable);
         }
 
-        private void ProcessBulletHit(EventData photonEvent)
+        public void HitPlayer(Player player, Vector2 direction)
         {
-            print($"processing bullet hit {photonEvent.Sender}, {photonEvent.Sender}");
-            
-            var bulletHitData = (BulletHitEventData) photonEvent.CustomData;
-            var playerView = PhotonView.Find(bulletHitData.viewId);
-            var player = playerView.GetComponent<Player>();
-            player.DisplayHit(bulletHitData.direction);
+            player.DisplayHit(direction);
             switch (player.playerColorType)
             {
                 case PlayerColor.Blue:
@@ -231,55 +204,40 @@ namespace TableSync
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (PhotonNetwork.IsMasterClient)
-            {
-                if (players[PlayerColor.Blue].Lives < 1)
-                {
-                    PhotonNetwork.RaiseEvent(
-                        GameEvents.GameEnded,
-                        GameEndResult.OrangePlayerWon,
-                        GameEventsUtilities.RaiseEventOptionsReceiversAll,
-                        SendOptions.SendReliable);
-                }
+            if (!PhotonNetwork.IsMasterClient) return;
 
-                if (players[PlayerColor.Orange].Lives < 1)
-                {
-                    PhotonNetwork.RaiseEvent(
-                        GameEvents.GameEnded,
-                        GameEndResult.BluePlayerWon,
-                        GameEventsUtilities.RaiseEventOptionsReceiversAll,
-                        SendOptions.SendReliable);
-                }
+            if (players[PlayerColor.Blue].Lives < 1)
+            {
+                PhotonNetwork.RaiseEvent(
+                    GameEvent.GameEnded,
+                    GameEndResult.OrangePlayerWon,
+                    GameEventsUtilities.RaiseEventOptionsReceiversAll,
+                    SendOptions.SendReliable);
+            }
+
+            if (players[PlayerColor.Orange].Lives < 1)
+            {
+                PhotonNetwork.RaiseEvent(
+                    GameEvent.GameEnded,
+                    GameEndResult.BluePlayerWon,
+                    GameEventsUtilities.RaiseEventOptionsReceiversAll,
+                    SendOptions.SendReliable);
             }
         }
 
-        private void ProcessBulletShoot(EventData photonEvent)
+        public void SpawnBullet(Vector2 position, float rotation)
         {
-            var bulletSpawnData = (BulletSpawnEventData) photonEvent.CustomData;
             var bulletPosition = new Vector3(
-                bulletSpawnData.position.x,
+                position.x,
                 BulletSpawnHeight,
-                bulletSpawnData.position.y);
-            var bulletRotation = Quaternion.Euler(0, bulletSpawnData.rotation, 0);
+                position.y);
+            var bulletRotation = Quaternion.Euler(0, rotation, 0);
             var bulletInstance = Instantiate(
                 bulletPrefab.gameObject,
                 bulletPosition,
                 bulletRotation);
             var bullet = bulletInstance.GetComponent<Bullet>();
             bullet.AddVelocity(BulletSpeed);
-        }
-
-        public override void OnLeftRoom()
-        {
-            SceneManager.LoadScene("Lobby");
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                PhotonNetwork.LeaveRoom();
-            }
         }
     }
 }

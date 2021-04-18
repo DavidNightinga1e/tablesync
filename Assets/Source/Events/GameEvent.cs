@@ -1,9 +1,9 @@
 ﻿namespace TableSync
 {
     /// <summary>
-    /// Events for Photon Event Code. Only bytes from 0 to 199 
+    /// GameEvent for Photon Event Code. Only bytes from 0 to 199 
     /// </summary>
-    public static class GameEvents
+    public static class GameEvent
     {
         public const byte BulletShoot = 0;
         public const byte BulletPlayerHit = 1;

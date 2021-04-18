@@ -35,7 +35,7 @@ namespace TableSync
                     };
 
                     PhotonNetwork.RaiseEvent(
-                        GameEvents.BulletPlayerHit,
+                        GameEvent.BulletPlayerHit,
                         bulletHitData,
                         GameEventsUtilities.RaiseEventOptionsReceiversAll,
                         SendOptions.SendReliable);

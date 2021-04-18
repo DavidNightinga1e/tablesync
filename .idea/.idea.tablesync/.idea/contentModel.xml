@@ -67,6 +67,7 @@
             <e p="Check out the full LUT Package.txt" t="Include" />
           </e>
         </e>
+        <e p="InfoDisplay.cs" t="Include" />
         <e p="Photon" t="Include">
           <e p="PhotonChat" t="Include">
             <e p="Code" t="Include">
@@ -435,9 +436,9 @@
             <e p="Bullet.cs" t="Include" />
             <e p="CameraController.cs" t="Include" />
             <e p="CustomRoomProperties.cs" t="Include" />
-            <e p="CustomRoomPropertiesConverter.cs" t="Include" />
-            <e p="CustomRoomPropertiesProvider.cs" t="Include" />
-            <e p="GameManager.cs" t="Include" />
+            <e p="Game.cs" t="Include" />
+            <e p="GameCallbacks.cs" t="Include" />
+            <e p="GameEventCallback.cs" t="Include" />
             <e p="LivesController.cs" t="Include" />
             <e p="ParticleSystemBulletController.cs" t="Include" />
             <e p="Player.cs" t="Include" />
@@ -452,8 +453,8 @@
           <e p="Events" t="Include">
             <e p="BulletHitEventData.cs" t="Include" />
             <e p="BulletSpawnEventData.cs" t="Include" />
-            <e p="Events.cs" t="Include" />
             <e p="GameEndResult.cs" t="Include" />
+            <e p="GameEvent.cs" t="Include" />
             <e p="GameEventsUtilities.cs" t="Include" />
           </e>
           <e p="Lobby" t="Include">

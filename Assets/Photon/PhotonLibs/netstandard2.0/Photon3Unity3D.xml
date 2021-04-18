@@ -57,7 +57,7 @@
              <summary>A slice of memory that should be pooled and reused. Wraps a byte-array.</summary>
              <remarks>
              This is a serializable datatype for the .Net clients. It will serialize and transfer as byte[].
-             If PhotonPeer.UseByteArraySlicePoolForEvents is enabled, byte-arrays in (incoming) events will be deserialized as
+             If PhotonPeer.UseByteArraySlicePoolForGameEvent is enabled, byte-arrays in (incoming) events will be deserialized as
              ByteArraySlice.
             
              Adjust your OnEvent code accordingly.
@@ -140,7 +140,7 @@
             Clears all pool items with byte array sizes between lower and upper inclusively.
             </summary>
             <remarks>
-            Use this if you sent some unusually large RaiseEvents and believe the buffers of that size
+            Use this if you sent some unusually large RaiseGameEvent and believe the buffers of that size
             will not be needed again, and you would like to free up the buffer memory.
             </remarks>
         </member>
@@ -490,13 +490,13 @@
              Called whenever an event from the Photon Server is dispatched.
              </summary>
              <remarks>
-             Events are used for communication between clients and allow the server to update clients anytime.
+             GameEvent are used for communication between clients and allow the server to update clients anytime.
              The creation of an event is often triggered by an operation (called by this client or an other).
             
              Each event carries a Code plus optional content in its Parameters.
              Your application should identify which content to expect by the event's Code.
             
-             Events can be defined and modified server-side.
+             GameEvent can be defined and modified server-side.
             
              If you use the LoadBalancing api as basis, several events like EvJoin and EvLeave are pre-defined.
              The LoadBalancing api provides the EventCode and ParameterCode classes for pre-defined events.
@@ -504,7 +504,7 @@
              Photon also allows you to come up with custom events on the fly, purely client-side.
              To do so, use OpRaiseEvent.<para></para>
             
-             Events are incoming messages and as such buffered in the peer.
+             GameEvent are incoming messages and as such buffered in the peer.
              Calling PhotonPeer.DispatchIncomingCommands will call IPhotonPeerListener.OnEvent, to hand over received events.
             
              PhotonPeer.ReuseEventInstance is an option to optimize memory usage by reusing one EventData instance.
@@ -1298,7 +1298,7 @@
              Changing this value acquires the same lock that DispatchIncomingCommands() uses.
              </remarks>
         </member>
-        <member name="P:ExitGames.Client.Photon.PhotonPeer.UseByteArraySlicePoolForEvents">
+        <member name="P:ExitGames.Client.Photon.PhotonPeer.UseByteArraySlicePoolForGameEvent">
              <summary>
              Enables a deserialization optimization for incoming events. Defaults to false.
              </summary>
@@ -1323,10 +1323,10 @@
         </member>
         <!-- Badly formed XML comment ignored for member "P:ExitGames.Client.Photon.PhotonPeer.WrapIncomingStructs" -->
         <member name="P:ExitGames.Client.Photon.PhotonPeer.ByteArraySlicePool">
-             <summary>Instance of a ByteArraySlicePool. UseByteArraySlicePoolForEvents defines if this PhotonPeer is using the pool for deserialization of byte[] in Photon events.</summary>
+             <summary>Instance of a ByteArraySlicePool. UseByteArraySlicePoolForGameEvent defines if this PhotonPeer is using the pool for deserialization of byte[] in Photon events.</summary>
              <remarks>
              ByteArraySlice is a serializable datatype of the Photon .Net client library.
-             It helps avoid allocations by being pooled and (optionally) used in incoming Photon events (see: UseByteArraySlicePoolForEvents).
+             It helps avoid allocations by being pooled and (optionally) used in incoming Photon events (see: UseByteArraySlicePoolForGameEvent).
             
              You can also use the pool to acquire ByteArraySlice instances for serialization.
              RaiseEvent will auto-release all ByteArraySlice instances passed in.
@@ -2088,7 +2088,7 @@
         </member>
         <member name="P:ExitGames.Client.Photon.EventData.Item(System.Byte)">
             <summary>
-            Access to the Parameters of a Photon-defined event. Custom Events only use Code, Sender and CustomData.
+            Access to the Parameters of a Photon-defined event. Custom GameEvent only use Code, Sender and CustomData.
             </summary>
             <param name="key">The key byte-code of a Photon event value.</param>
             <returns>The Parameters value, or null if the key does not exist in Parameters.</returns>

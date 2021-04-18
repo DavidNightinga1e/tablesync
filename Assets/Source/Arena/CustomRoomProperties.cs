@@ -1,10 +1,20 @@
-﻿namespace TableSync
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
+
+namespace TableSync
 {
-    public class CustomRoomProperties
+    public static class CustomRoomProperties
     {
-        public bool IsBluePlayerConnected;
-        public bool IsOrangePlayerConnected;
+        public static bool IsBluePlayerConnected
+        {
+            get => (bool) PhotonNetwork.CurrentRoom.CustomProperties[nameof(IsBluePlayerConnected)];
+            set => PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable {{nameof(IsBluePlayerConnected), value}});
+        }
         
-        public static CustomRoomProperties Default => new CustomRoomProperties();
+        public static bool IsOrangePlayerConnected
+        {
+            get => (bool) PhotonNetwork.CurrentRoom.CustomProperties[nameof(IsOrangePlayerConnected)];
+            set => PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable {{nameof(IsOrangePlayerConnected), value}});
+        }
     }
 }

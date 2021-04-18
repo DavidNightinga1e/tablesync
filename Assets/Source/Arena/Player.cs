@@ -16,39 +16,41 @@ namespace TableSync
         public Transform bulletSpawnPoint;
 
         private const float ReloadTime = 0.8f;
-        private const float PlayerSpeed = 5f;
+        private const float PlayerSpeed = 2f;
 
         private double _lastShootTime;
         private Camera _inputCamera;
-        private GameManager _gameManager;
+        private Game _game;
         private LivesController _livesController;
 
         public int Lives { get; set; } = 3;
 
         private void Awake()
         {
-            _gameManager = FindObjectOfType<GameManager>();
-            _livesController = Instantiate(livesControllerPrefab.gameObject, _gameManager.canvas.transform)
+            _game = FindObjectOfType<Game>();
+            _livesController = Instantiate(livesControllerPrefab.gameObject, _game.canvas.transform)
                 .GetComponent<LivesController>();
             _livesController.player = this;
-            _livesController.mainCamera = _gameManager.inputCamera;
-            _inputCamera = _gameManager.inputCamera;
-            _gameManager.players.Add(playerColorType, this);
+            _livesController.mainCamera = _game.inputCamera;
+            _inputCamera = _game.inputCamera;
+            _game.players.Add(playerColorType, this);
 
             if (photonView.IsMine)
-                _gameManager.cameraController.SetPlayerColor(playerColorType);
+                _game.cameraController.SetPlayerColor(playerColorType);
         }
 
         private void Update()
         {
             if (!photonView.IsMine) return;
-            if (!_gameManager.IsGameRunning) return;
+            if (!_game.IsGameRunning) return;
 
             ProcessInputForThisPlayer();
         }
 
         private void ProcessInputForThisPlayer()
         {
+            if (Input.GetKeyDown(KeyCode.Escape)) PhotonNetwork.LeaveRoom();
+
             Vector3 inputMove;
             var horizontalInput = Input.GetAxis("Horizontal");
             var verticalInput = Input.GetAxis("Vertical");
@@ -104,7 +106,7 @@ namespace TableSync
                 rotation = rotation.y
             };
             PhotonNetwork.RaiseEvent(
-                GameEvents.BulletShoot,
+                GameEvent.BulletShoot,
                 bulletSpawnData,
                 GameEventsUtilities.RaiseEventOptionsReceiversAll,
                 SendOptions.SendReliable);
@@ -121,7 +123,7 @@ namespace TableSync
 
         private void OnDestroy()
         {
-            _gameManager.players.Remove(playerColorType);
+            _game.players.Remove(playerColorType);
             Destroy(_livesController.gameObject);
         }
     }
