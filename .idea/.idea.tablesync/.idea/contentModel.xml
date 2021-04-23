@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Nightingale\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Nightingale\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_tablesync.-1542829458.00" t="ExcludeRecursive" />
+    <e p="C:\Users\hans\AppData\local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\hans\AppData\local\JetBrains\Rider2020.1\resharper-host\local\Transient\ReSharperHost\v201\SolutionCaches\_tablesync.-1542829458.00" t="ExcludeRecursive" />
     <e p="D:\Projects\tablesync" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
@@ -67,7 +67,6 @@
             <e p="Check out the full LUT Package.txt" t="Include" />
           </e>
         </e>
-        <e p="InfoDisplay.cs" t="Include" />
         <e p="Photon" t="Include">
           <e p="PhotonChat" t="Include">
             <e p="Code" t="Include">
@@ -112,6 +111,7 @@
             </e>
             <e p="Photon3Unity3D.xml" t="Include" />
             <e p="WebSocket" t="Include">
+              <e p="PhotonWebSocket.asmdef" t="Include" />
               <e p="SocketWebTcp.cs" t="Include" />
               <e p="WebSocket.cs" t="Include" />
             </e>
@@ -433,22 +433,39 @@
         </e>
         <e p="Source" t="Include">
           <e p="Arena" t="Include">
-            <e p="Bullet.cs" t="Include" />
-            <e p="CameraController.cs" t="Include" />
-            <e p="CustomRoomProperties.cs" t="Include" />
-            <e p="Game.cs" t="Include" />
-            <e p="GameCallbacks.cs" t="Include" />
-            <e p="GameEventCallback.cs" t="Include" />
-            <e p="LivesController.cs" t="Include" />
-            <e p="ParticleSystemBulletController.cs" t="Include" />
-            <e p="Player.cs" t="Include" />
+            <e p="ArenaStartup.cs" t="Include" />
+            <e p="Components" t="Include">
+              <e p="LocalPlayerTag.cs" t="Include" />
+              <e p="PlayerAddedEvent.cs" t="Include" />
+              <e p="PlayerComponent.cs" t="Include" />
+              <e p="PlayerInput.cs" t="Include" />
+              <e p="PlayerShootCooldown.cs" t="Include" />
+              <e p="RemotePlayerTag.cs" t="Include" />
+            </e>
+            <e p="Systems" t="Include">
+              <e p="CameraControlSystem.cs" t="Include" />
+              <e p="NicknameDisplaySystem.cs" t="Include" />
+              <e p="PlayerCooldownSystem.cs" t="Include" />
+              <e p="PlayerMovementSystem.cs" t="Include" />
+              <e p="PlayerShootEvent.cs" t="Include" />
+              <e p="PlayerShootSystem.cs" t="Include" />
+              <e p="PlayerSpawnSystem.cs" t="Include" />
+              <e p="UserInputSystem.cs" t="Include" />
+            </e>
+            <e p="UnityComponents" t="Include">
+              <e p="Bullet.cs" t="Include" />
+              <e p="NicknameDisplay.cs" t="Include" />
+              <e p="PlayerBehaviour.cs" t="Include" />
+              <e p="PrefabProvider.cs" t="Include" />
+              <e p="RemotePlayerInstantiationProvider.cs" t="Include" />
+            </e>
           </e>
           <e p="Common" t="Include">
-            <e p="DialogBox.cs" t="Include" />
-            <e p="LocalSettings.cs" t="Include" />
-            <e p="LocalSettingsProvider.cs" t="Include" />
-            <e p="PlayerColor.cs" t="Include" />
-            <e p="ResourcesPrefabs.cs" t="Include" />
+            <e p="Obsolete" t="Include">
+              <e p="DialogBox.cs" t="Include" />
+              <e p="PlayerColor.cs" t="Include" />
+              <e p="SettingsProvider.cs" t="Include" />
+            </e>
           </e>
           <e p="Events" t="Include">
             <e p="BulletHitEventData.cs" t="Include" />
@@ -458,10 +475,20 @@
             <e p="GameEventsUtilities.cs" t="Include" />
           </e>
           <e p="Lobby" t="Include">
+            <e p="Components" t="Include">
+              <e p="PlayerSettingsComponent.cs" t="Include" />
+              <e p="VersionComponent.cs" t="Include" />
+            </e>
             <e p="Links.cs" t="Include" />
-            <e p="LobbyManager.cs" t="Include" />
             <e p="PhotonPeerHelper.cs" t="Include" />
-            <e p="SettingsPanel.cs" t="Include" />
+            <e p="Systems" t="Include">
+              <e p="LobbySystemRunner.cs" t="Include" />
+              <e p="MatchmakingSystem.cs" t="Include" />
+              <e p="MatchmakingUserInput.cs" t="Include" />
+              <e p="PhotonInitializationSystem.cs" t="Include" />
+              <e p="PlayerSettingsSystem.cs" t="Include" />
+              <e p="VersionDisplaySystem.cs" t="Include" />
+            </e>
           </e>
         </e>
         <e p="TextMesh Pro" t="Include">
@@ -506,6 +533,7 @@
       <e p="PhotonUnityNetworking.Utilities.csproj" t="IncludeRecursive" />
       <e p="PhotonUnityNetworking.Utilities.Culling.Editor.csproj" t="IncludeRecursive" />
       <e p="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj" t="IncludeRecursive" />
+      <e p="PhotonWebSocket.csproj" t="IncludeRecursive" />
       <e p="PunDemos.DemoHubEditor.csproj" t="IncludeRecursive" />
       <e p="PunDemos.DemoSlotcarEditor.csproj" t="IncludeRecursive" />
       <e p="tablesync.sln" t="IncludeFlat" />
