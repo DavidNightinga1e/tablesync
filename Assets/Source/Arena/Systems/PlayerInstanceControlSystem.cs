@@ -15,11 +15,11 @@ namespace Source.Arena.Systems
         public void Init()
         {
             PhotonNetwork.AddCallbackTarget(this);
+            InitLocal();
             if (_remotePlayerInstantiationProvider.remotePlayerBehaviour is null)
                 _remotePlayerInstantiationProvider.OnRemotePlayerInstantiated += InitRemote;
             else
                 InitRemote();
-            InitLocal();
         }
 
         private void InitLocal()
@@ -51,6 +51,9 @@ namespace Source.Arena.Systems
 
             player.IsBlue = !PhotonNetwork.IsMasterClient;
             player.PlayerBehaviour = remotePlayerBehaviour;
+
+            var gameStart = _world.NewEntity();
+            gameStart.Get<GameStartedEvent>();
         }
     }
 }

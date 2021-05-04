@@ -36,8 +36,9 @@ namespace Source.Arena
         {
             foreach (var i in _addedPlayer)
             {
-                var playerComponent = _addedPlayer.Get1(i);
-                playerComponent.PlayerBehaviour.OnHit += () => PlayerBehaviourOnOnHit(playerComponent);
+                var id = i;
+                var playerComponent = _addedPlayer.Get1(id);
+                playerComponent.PlayerBehaviour.OnHit += () => PlayerBehaviourOnOnHit(_addedPlayer.GetEntity(id));
             }
 
             if (_localPlayer.IsEmpty())
@@ -53,24 +54,25 @@ namespace Source.Arena
             cooldown.TimeLeft = Cooldown;
 
             var playerBehaviour = player.PlayerBehaviour;
+            var bulletPosition = playerBehaviour.transform.position
+                                 + playerBehaviour.transform.forward * BulletSpawnDistance
+                                 + Vector3.up * BulletSpawnHeight;
+            var bulletRotation = playerBehaviour.transform.rotation;
             Object.Instantiate(
                 _prefabProvider.bullet,
-                playerBehaviour.transform.position
-                + playerBehaviour.transform.forward * BulletSpawnDistance
-                + Vector3.up * BulletSpawnHeight,
-                playerBehaviour.transform.rotation);
+                bulletPosition,
+                bulletRotation);
 
-            PhotonNetwork.RaiseEvent(GameEvent.BulletShoot, null,
+            PhotonNetwork.RaiseEvent(GameEvent.BulletShoot, new object[] {bulletPosition, bulletRotation},
                 new RaiseEventOptions
                 {
                     Receivers = ReceiverGroup.Others
                 }, SendOptions.SendReliable);
         }
 
-        private void PlayerBehaviourOnOnHit(PlayerComponent playerComponent)
+        private void PlayerBehaviourOnOnHit(EcsEntity entity)
         {
-            playerComponent.Health -= 1;
-            Debug.Log($"{(playerComponent.IsBlue ? "blue" : "orange")} - {playerComponent.Health}");
+            entity.Get<PlayerHitEvent>();
         }
 
         public void OnEvent(EventData photonEvent)
@@ -83,11 +85,13 @@ namespace Source.Arena
 
                     ref var playerComponent = ref _remotePlayer.Get1(0);
                     var playerBehaviour = playerComponent.PlayerBehaviour;
+                    var customDataArray = (object[])photonEvent.CustomData;
+                    var bulletPosition = (Vector3)customDataArray[0];
+                    var bulletRotation = (Quaternion)customDataArray[1];
                     Object.Instantiate(
                         _prefabProvider.bullet,
-                        playerBehaviour.transform.position + playerBehaviour.transform.forward +
-                        Vector3.up * BulletSpawnHeight,
-                        playerBehaviour.transform.rotation);
+                        bulletPosition,
+                        bulletRotation);
                     break;
             }
         }

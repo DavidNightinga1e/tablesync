@@ -7,6 +7,8 @@ public class NicknameDisplay : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI local;
     [SerializeField] private TextMeshProUGUI remote;
+    [SerializeField] private TextMeshProUGUI localScore;
+    [SerializeField] private TextMeshProUGUI remoteScore;
 
     public string Local
     {
@@ -18,5 +20,17 @@ public class NicknameDisplay : MonoBehaviour
     {
         get => remote.text;
         set => remote.text = value;
+    }
+
+    public string LocalScore
+    {
+        get => localScore.text;
+        set => localScore.text = value;
+    }
+
+    public string RemoteScore
+    {
+        get => remoteScore.text;
+        set => remoteScore.text = value;
     }
 }

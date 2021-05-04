@@ -23,7 +23,7 @@ namespace Source.Arena.Systems
                 playerBehaviourTransform.position = playerComponent.IsBlue
                     ? GameRules.BlueSpawn
                     : GameRules.OrangeSpawn;
-                playerComponent.Health = GameRules.Health;
+                playerComponent.Score = 0;
             }
         }
     }

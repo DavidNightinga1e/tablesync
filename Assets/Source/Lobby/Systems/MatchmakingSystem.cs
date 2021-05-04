@@ -60,9 +60,10 @@ namespace Source.Lobby.Systems
 
         public void OnJoinRandomFailed(short returnCode, string message)
         {
-            Debug.LogError($"{nameof(OnJoinRandomFailed)} - {returnCode} - {message}");
             if (returnCode == 32760)
                 Join(Guid.NewGuid().ToString());
+            else 
+                Debug.LogError($"{nameof(OnJoinRandomFailed)} - {returnCode} - {message}");
         }
 
         public void OnLeftRoom()

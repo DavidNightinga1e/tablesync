@@ -435,21 +435,27 @@
           <e p="Arena" t="Include">
             <e p="ArenaStartup.cs" t="Include" />
             <e p="Components" t="Include">
+              <e p="GameEndedEvent.cs" t="Include" />
+              <e p="GameStartedEvent.cs" t="Include" />
               <e p="LocalPlayerTag.cs" t="Include" />
               <e p="PlayerAddedEvent.cs" t="Include" />
               <e p="PlayerComponent.cs" t="Include" />
+              <e p="PlayerHitEvent.cs" t="Include" />
               <e p="PlayerInput.cs" t="Include" />
               <e p="PlayerShootCooldown.cs" t="Include" />
               <e p="RemotePlayerTag.cs" t="Include" />
             </e>
+            <e p="GameRules.cs" t="Include" />
             <e p="Systems" t="Include">
               <e p="CameraControlSystem.cs" t="Include" />
+              <e p="GameStartSystem.cs" t="Include" />
               <e p="NicknameDisplaySystem.cs" t="Include" />
               <e p="PlayerCooldownSystem.cs" t="Include" />
+              <e p="PlayerInstanceControlSystem.cs" t="Include" />
               <e p="PlayerMovementSystem.cs" t="Include" />
               <e p="PlayerShootEvent.cs" t="Include" />
               <e p="PlayerShootSystem.cs" t="Include" />
-              <e p="PlayerSpawnSystem.cs" t="Include" />
+              <e p="ScoreboardSystem.cs" t="Include" />
               <e p="UserInputSystem.cs" t="Include" />
             </e>
             <e p="UnityComponents" t="Include">
@@ -476,12 +482,14 @@
           </e>
           <e p="Lobby" t="Include">
             <e p="Components" t="Include">
+              <e p="LoadingPlaceholder.cs" t="Include" />
               <e p="PlayerSettingsComponent.cs" t="Include" />
               <e p="VersionComponent.cs" t="Include" />
             </e>
             <e p="Links.cs" t="Include" />
             <e p="PhotonPeerHelper.cs" t="Include" />
             <e p="Systems" t="Include">
+              <e p="ConnectionSystem.cs" t="Include" />
               <e p="LobbySystemRunner.cs" t="Include" />
               <e p="MatchmakingSystem.cs" t="Include" />
               <e p="MatchmakingUserInput.cs" t="Include" />
